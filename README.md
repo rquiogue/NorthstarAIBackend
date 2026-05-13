@@ -1,39 +1,23 @@
 # NorthstarAIBackend
 
-Stateless Go AI API service scaffold.
+A minimal Go HTTP server with one endpoint to build on.
 
 ## Run
 
-1. Copy `.env.example` to `.env` and set `AI_API_KEY`
-2. Start the API:
-
 ```bash
-make run
+go run main.go
 ```
 
-Optional: set `CORS_ALLOWED_ORIGINS` (comma-separated) to restrict allowed browser origins.
+## Endpoint
 
-## API
-
-- `POST /api/v1/chat`
+`POST /chat`
 
 Request:
-
 ```json
-{
-  "message": "hello",
-  "model": "gpt-4o-mini"
-}
+{ "message": "hello" }
 ```
 
 Response:
-
 ```json
-{
-  "success": true,
-  "data": {
-    "response": "..."
-  },
-  "error": null
-}
+{ "reply": "echo: hello" }
 ```
