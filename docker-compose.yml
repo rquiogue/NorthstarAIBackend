@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: "8080"
+      AI_API_KEY: "${AI_API_KEY}"
+      AI_BASE_URL: "${AI_BASE_URL:-https://api.openai.com}"
+      AI_DEFAULT_MODEL: "${AI_DEFAULT_MODEL:-gpt-4o-mini}"
+    ports:
+      - "8080:8080"
