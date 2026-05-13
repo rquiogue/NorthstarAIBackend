@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -12,20 +11,22 @@ import (
 const defaultAIBaseURL = "https://api.openai.com"
 
 type Config struct {
-	Port         string
-	AIAPIKey     string
-	AIBaseURL    string
-	DefaultModel string
+	Port           string
+	AIAPIKey       string
+	AIBaseURL      string
+	DefaultModel   string
+	AllowedOrigins []string
 }
 
 func Load() (*Config, error) {
 	_ = godotenv.Load()
 
 	cfg := &Config{
-		Port:         strings.TrimSpace(os.Getenv("PORT")),
-		AIAPIKey:     strings.TrimSpace(os.Getenv("AI_API_KEY")),
-		AIBaseURL:    strings.TrimSpace(os.Getenv("AI_BASE_URL")),
-		DefaultModel: strings.TrimSpace(os.Getenv("AI_DEFAULT_MODEL")),
+		Port:           strings.TrimSpace(os.Getenv("PORT")),
+		AIAPIKey:       strings.TrimSpace(os.Getenv("AI_API_KEY")),
+		AIBaseURL:      strings.TrimSpace(os.Getenv("AI_BASE_URL")),
+		DefaultModel:   strings.TrimSpace(os.Getenv("AI_DEFAULT_MODEL")),
+		AllowedOrigins: parseOrigins(strings.TrimSpace(os.Getenv("CORS_ALLOWED_ORIGINS"))),
 	}
 
 	if cfg.AIBaseURL == "" {
@@ -55,9 +56,25 @@ func (c *Config) Validate() error {
 		return fmt.Errorf("missing required env vars: %s", strings.Join(missing, ", "))
 	}
 
-	if c.AIBaseURL == "" {
-		return errors.New("AI_BASE_URL cannot be empty when provided")
+	return nil
+}
+
+func parseOrigins(raw string) []string {
+	if raw == "" {
+		return []string{"http://localhost:3000", "http://127.0.0.1:3000"}
 	}
 
-	return nil
+	parts := strings.Split(raw, ",")
+	origins := make([]string, 0, len(parts))
+	for _, part := range parts {
+		origin := strings.TrimSpace(part)
+		if origin != "" {
+			origins = append(origins, origin)
+		}
+	}
+	if len(origins) == 0 {
+		return []string{"http://localhost:3000", "http://127.0.0.1:3000"}
+	}
+
+	return origins
 }

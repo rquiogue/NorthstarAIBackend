@@ -11,6 +11,8 @@ Stateless Go AI API service scaffold.
 make run
 ```
 
+Optional: set `CORS_ALLOWED_ORIGINS` (comma-separated) to restrict allowed browser origins.
+
 ## API
 
 - `POST /api/v1/chat`
